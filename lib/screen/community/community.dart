@@ -252,7 +252,10 @@ class _PostCardState extends State<PostCard> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(post.content, style: GoogleFonts.poppins(fontSize: 15)),
+            child: Text(
+              post.content,
+              style: GoogleFonts.poppins(fontSize: 15, color: Colors.black),
+            ),
           ),
           if (post.image != null)
             Container(
@@ -322,11 +325,15 @@ class _PostCardState extends State<PostCard> {
                                 style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14,
+                                  color: Colors.black,
                                 ),
                               ),
                               Text(
                                 comment.content,
-                                style: GoogleFonts.poppins(fontSize: 14),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
                               ),
                             ],
                           ),

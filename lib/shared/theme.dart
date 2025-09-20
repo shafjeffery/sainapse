@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // 🎨 Color palette  Color(0xFFFFE066)
-  static const Color primaryColor = Color(0xFFFFE066); // yellow
-  static const Color secondaryColor = Color(0xFF4E342E); // dark brown
+  // 🎨 Color palette
+  static const Color primaryColor = Color(0xFF4E342E); // dark brown for text
+  static const Color secondaryColor = Color(0xFF8B7355); // medium brown
+  static const Color accentColor = Color(
+    0xFFFFD93D,
+  ); // yellow for backgrounds/accents
   static const Color backgroundColor = Color(0xFFFFF9DB); // Light cream
   static const Color cardColor = Colors.white;
 

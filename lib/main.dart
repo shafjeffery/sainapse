@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'shared/theme.dart';
-import 'screen/community/community.dart';
+import 'screen/flashnotes/flashnotes_home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'SAInapse',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const CommunityPage(),
+      home: const FlashNotesPage(),
     );
   }
 }
