@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'home_page.dart';
-import 'screen/chatbot/chatbot_screen.dart';
-import 'screen/friends/friends_screen.dart';
-import 'screen/visualize/lookout_screen.dart';
-
-import 'shared/theme.dart';
-import 'screen/flashnotes/flashnotes_home.dart';
+import 'screen/main_navigation.dart';
 
 
 void main() {
@@ -23,7 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData.light(),
-      home: const LookoutScreen(),
+      home: const MainNavigation(),
     );
   }
 }
