@@ -1,6 +1,8 @@
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'aws_scan_service.dart';
 
 class MLService {
@@ -25,6 +27,28 @@ class MLService {
         'lastSpokenLabel': '',
       };
     }
+  }
+
+  Future<Map<String, dynamic>> processAssetImage(String assetPath) async {
+    try {
+      final imageBytes = await _loadAssetImage(assetPath);
+      final result = await _awsService.analyzeImage(imageBytes);
+      return result;
+    } catch (e) {
+      print('Error processing asset image: $e');
+      return {
+        'objects': <Map<String, dynamic>>[],
+        'texts': <Map<String, dynamic>>[],
+        'detectedObject': '',
+        'announcement': '',
+        'lastSpokenLabel': '',
+      };
+    }
+  }
+
+  Future<Uint8List> _loadAssetImage(String assetPath) async {
+    final ByteData data = await rootBundle.load(assetPath);
+    return data.buffer.asUint8List();
   }
 
   Uint8List _convertCameraImageToBytes(CameraImage image) {

@@ -54,6 +54,9 @@ flutter:
 
   assets:
     - assets/
+    - assets/heart.jpg
+    - assets/human_heart.glb
+    - .env
 
 
   # To add assets to your application, add an assets section, like this:
