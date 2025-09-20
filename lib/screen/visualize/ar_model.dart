@@ -2,8 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ArModel extends StatelessWidget {
+class ArModel extends StatefulWidget {
   const ArModel({super.key});
+
+  @override
+  State<ArModel> createState() => _ArModelState();
+}
+
+class _ArModelState extends State<ArModel> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set loading to false after a short delay to show the model
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
+  }
 
   void _showHeartInfo(BuildContext context) {
     showDialog(
@@ -103,14 +123,106 @@ class ArModel extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        child: ModelViewer(
-                          src: 'assets/human_heart.glb',
-                          alt: "A 3D model of a human heart",
-                          ar: true,
-                          autoRotate: true,
-                          cameraControls: true,
-                          backgroundColor: const Color(0xFFFFF9DB),
-                        ),
+                        child: _isLoading
+                            ? const Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Color(0xFF6B8E23),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
+                                    Text(
+                                      'Loading 3D Heart Model...',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Colors.grey[100],
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: const Color(0xFFFFF9DB),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      // Heart icon as placeholder
+                                      Container(
+                                        width: 120,
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          color: Colors.red.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            60,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.red,
+                                            width: 3,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.favorite,
+                                          size: 80,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Text(
+                                        '3D Heart Model',
+                                        style: GoogleFonts.museoModerno(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        'AR functionality requires\nHTTPS connection',
+                                        style: GoogleFonts.museoModerno(
+                                          fontSize: 14,
+                                          color: Colors.black54,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 20),
+                                      ElevatedButton.icon(
+                                        onPressed: () {
+                                          // Show heart information instead
+                                          _showHeartInfo(context);
+                                        },
+                                        icon: const Icon(Icons.info_outline),
+                                        label: const Text('View Heart Info'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(
+                                            0xFF6B8E23,
+                                          ),
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 10,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              25,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                       ),
                     ],
                   ),

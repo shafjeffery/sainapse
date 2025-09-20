@@ -5,6 +5,8 @@ class CameraService {
     final cameras = await availableCameras();
     final camera = cameras.first;
 
-    return CameraController(camera, ResolutionPreset.high, enableAudio: false);
+    final controller = CameraController(camera, ResolutionPreset.high, enableAudio: false);
+    await controller.initialize();
+    return controller;
   }
 }
