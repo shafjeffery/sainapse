@@ -206,7 +206,7 @@ class _LookoutScreenState extends State<LookoutScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              tooltip: 'Start AI Heart Scan',
+              tooltip: 'Start AI Scan',
             ),
           ),
         ],

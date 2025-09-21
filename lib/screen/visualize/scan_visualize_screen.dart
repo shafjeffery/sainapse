@@ -60,7 +60,7 @@ class _ScanVisualizeScreenState extends State<ScanVisualizeScreen>
     setState(() {
       _isScanning = true;
       _isProcessing = true;
-      _scanningStatus = 'Scanning heart image...';
+      _scanningStatus = 'Scanning image...';
     });
 
     _scanAnimationController.repeat();
@@ -118,7 +118,7 @@ class _ScanVisualizeScreenState extends State<ScanVisualizeScreen>
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'AI Heart Scanner',
+          'AI Scanner',
           style: GoogleFonts.museoModerno(
             color: const Color(0xFFFFF9DB),
             fontWeight: FontWeight.bold,

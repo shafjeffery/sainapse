@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AWSService {
-  static const String _region = 'us-east-1'; // Change to your preferred region
+  static const String _region =
+      'ap-southeast-1'; // Change to your preferred region
   String get _accessKey => dotenv.env['AWS_ACCESS_KEY_ID'] ?? 'DEMO_KEY';
   String get _secretKey => dotenv.env['AWS_SECRET_ACCESS_KEY'] ?? 'DEMO_SECRET';
 
