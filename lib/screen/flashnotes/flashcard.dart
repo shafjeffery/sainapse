@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../services/file_service.dart';
+import '../../services/aws_flashnotes_service.dart';
 
 class FlashcardsResultPage extends StatefulWidget {
   final String fileName;
+  final FlashnotesResult? flashnotesResult;
 
-  const FlashcardsResultPage({super.key, required this.fileName});
+  const FlashcardsResultPage({
+    super.key,
+    required this.fileName,
+    this.flashnotesResult,
+  });
 
   @override
   State<FlashcardsResultPage> createState() => _FlashcardsResultPageState();
@@ -12,25 +19,34 @@ class FlashcardsResultPage extends StatefulWidget {
 
 class _FlashcardsResultPageState extends State<FlashcardsResultPage> {
   int currentIndex = 0;
+  bool isSaving = false;
 
-  // Dummy flashcards
-  final List<Map<String, String>> flashcards = [
-    {
-      "question": "What is Python?",
-      "answer":
-          "Python is a high-level programming language created by Guido van Rossum in 1991.",
-    },
-    {
-      "question": "What is Python used for?",
-      "answer":
-          "Python is used for web development, data analysis, machine learning, automation, and more.",
-    },
-    {
-      "question": "Is Python easy to learn?",
-      "answer":
-          "Yes! Python is known for its simple syntax, making it beginner-friendly.",
-    },
-  ];
+  // Get flashcards from AWS result or use dummy data
+  List<Map<String, String>> get flashcards {
+    if (widget.flashnotesResult != null &&
+        widget.flashnotesResult!.flashcards.isNotEmpty) {
+      return widget.flashnotesResult!.flashcards;
+    }
+
+    // Fallback to dummy flashcards
+    return [
+      {
+        "question": "What is Python?",
+        "answer":
+            "Python is a high-level programming language created by Guido van Rossum in 1991.",
+      },
+      {
+        "question": "What is Python used for?",
+        "answer":
+            "Python is used for web development, data analysis, machine learning, automation, and more.",
+      },
+      {
+        "question": "Is Python easy to learn?",
+        "answer":
+            "Yes! Python is known for its simple syntax, making it beginner-friendly.",
+      },
+    ];
+  }
 
   bool showAnswer = false;
 
@@ -56,6 +72,92 @@ class _FlashcardsResultPageState extends State<FlashcardsResultPage> {
     setState(() {
       showAnswer = !showAnswer;
     });
+  }
+
+  Future<void> _saveFlashcards() async {
+    setState(() {
+      isSaving = true;
+    });
+
+    try {
+      // Get the flashcards content
+      final String flashcardsContent = _getFlashcardsContent();
+
+      // Save to file
+      final bool success = await FileService.saveNotesToFile(
+        fileName: widget.fileName,
+        content: flashcardsContent,
+        noteType: 'Flash Card',
+      );
+
+      if (mounted) {
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                "Flashcards saved successfully to SAInapse_Notes/Flash Card folder!",
+                style: GoogleFonts.museoModerno(),
+              ),
+              backgroundColor: const Color(0xFF4E342E),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                "Failed to save flashcards. Please try again.",
+                style: GoogleFonts.museoModerno(),
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Error saving flashcards: $e",
+              style: GoogleFonts.museoModerno(),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isSaving = false;
+        });
+      }
+    }
+  }
+
+  String _getFlashcardsContent() {
+    if (widget.flashnotesResult != null) {
+      return widget.flashnotesResult!.flashcardsAsString;
+    }
+
+    final StringBuffer content = StringBuffer();
+    content.writeln("Flashcards - ${widget.fileName}");
+    content.writeln("=" * 50);
+    content.writeln();
+
+    for (int i = 0; i < flashcards.length; i++) {
+      final card = flashcards[i];
+      content.writeln("Card ${i + 1}:");
+      content.writeln("Question: ${card['question']}");
+      content.writeln("Answer: ${card['answer']}");
+      content.writeln();
+    }
+
+    content.writeln("---");
+    content.writeln("Generated from: ${widget.fileName}");
+    content.writeln("Created: ${DateTime.now().toString()}");
+
+    return content.toString();
   }
 
   @override
@@ -166,17 +268,7 @@ class _FlashcardsResultPageState extends State<FlashcardsResultPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Flashcards saved successfully!",
-                        style: GoogleFonts.museoModerno(),
-                      ),
-                      backgroundColor: const Color(0xFF4E342E),
-                    ),
-                  );
-                },
+                onPressed: isSaving ? null : _saveFlashcards,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4E342E),
                   foregroundColor: Colors.white,
@@ -185,13 +277,37 @@ class _FlashcardsResultPageState extends State<FlashcardsResultPage> {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: Text(
-                  "Save Into Folder",
-                  style: GoogleFonts.museoModerno(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: isSaving
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            "Saving...",
+                            style: GoogleFonts.museoModerno(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Text(
+                        "Save Into Folder",
+                        style: GoogleFonts.museoModerno(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ),
           ],

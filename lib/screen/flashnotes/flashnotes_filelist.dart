@@ -3,11 +3,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'simplenote.dart';
 import 'flashcard.dart';
 import '../../shared/theme.dart';
+import '../../services/aws_flashnotes_service.dart';
 
 class FileSummaryOptionsPage extends StatefulWidget {
   final String fileName; // Pass uploaded file name
+  final FlashnotesResult? flashnotesResult; // Pass processed result
 
-  const FileSummaryOptionsPage({super.key, required this.fileName});
+  const FileSummaryOptionsPage({
+    super.key,
+    required this.fileName,
+    this.flashnotesResult,
+  });
 
   @override
   State<FileSummaryOptionsPage> createState() => _FileSummaryOptionsPageState();
@@ -46,16 +52,20 @@ class _FileSummaryOptionsPageState extends State<FileSummaryOptionsPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          SimpleNotesResultPage(fileName: widget.fileName),
+                      builder: (context) => SimpleNotesResultPage(
+                        fileName: widget.fileName,
+                        flashnotesResult: widget.flashnotesResult,
+                      ),
                     ),
                   );
                 } else if (selectedOption == "Flash Card") {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          FlashcardsResultPage(fileName: widget.fileName),
+                      builder: (context) => FlashcardsResultPage(
+                        fileName: widget.fileName,
+                        flashnotesResult: widget.flashnotesResult,
+                      ),
                     ),
                   );
                 } else {
