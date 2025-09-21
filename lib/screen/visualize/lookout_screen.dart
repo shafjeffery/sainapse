@@ -42,16 +42,39 @@ class _LookoutScreenState extends State<LookoutScreen> {
   }
 
   Future<void> _initCameraAndML() async {
-    await Permission.camera.request();
-    await Permission.microphone.request();
+    try {
+      // Request camera permission
+      final cameraStatus = await Permission.camera.request();
+      if (cameraStatus != PermissionStatus.granted) {
+        print('Camera permission denied');
+        return;
+      }
 
-    final controller = await _cameraService.initializeCamera();
-    if (!mounted) return;
+      // Request microphone permission
+      final micStatus = await Permission.microphone.request();
+      if (micStatus != PermissionStatus.granted) {
+        print('Microphone permission denied');
+      }
 
-    setState(() {
-      _cameraController = controller;
-    });
-    _cameraController?.startImageStream(_processImage);
+      final controller = await _cameraService.initializeCamera();
+      if (!mounted) return;
+
+      setState(() {
+        _cameraController = controller;
+      });
+      _cameraController?.startImageStream(_processImage);
+    } catch (e) {
+      print('Error initializing camera: $e');
+      // Show error to user
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to initialize camera: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _processImage(CameraImage image) async {
@@ -161,10 +184,11 @@ class _LookoutScreenState extends State<LookoutScreen> {
                 ),
               ),
             ),
+          // AI Scan Button
           Positioned(
             bottom: 20,
             right: 20,
-            child: FloatingActionButton(
+            child: FloatingActionButton.extended(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -174,12 +198,15 @@ class _LookoutScreenState extends State<LookoutScreen> {
                 );
               },
               backgroundColor: const Color(0xFF6B8E23),
-              child: const Icon(
-                Icons.view_in_ar,
-                color: Colors.white,
-                size: 28,
+              icon: const Icon(Icons.radar, color: Colors.white),
+              label: Text(
+                'AI Scan',
+                style: GoogleFonts.museoModerno(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              tooltip: 'View AR Model',
+              tooltip: 'Start AI Heart Scan',
             ),
           ),
         ],

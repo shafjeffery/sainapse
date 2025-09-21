@@ -1,17 +1,21 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
-import 'package:crypto/crypto.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AWSService {
   static const String _region = 'us-east-1'; // Change to your preferred region
-  static const String _accessKey =
-      'YOUR_ACCESS_KEY_HERE'; // Replace with your access key
-  static const String _secretKey =
-      'YOUR_SECRET_KEY_HERE'; // Replace with your secret key
+  String get _accessKey => dotenv.env['AWS_ACCESS_KEY_ID'] ?? 'DEMO_KEY';
+  String get _secretKey => dotenv.env['AWS_SECRET_ACCESS_KEY'] ?? 'DEMO_SECRET';
 
   Future<Map<String, dynamic>> analyzeImage(Uint8List imageBytes) async {
     try {
+      // Check if we have valid AWS credentials
+      if (_accessKey == 'DEMO_KEY' || _secretKey == 'DEMO_SECRET') {
+        print('AWS credentials not configured, using simulation mode');
+        return _simulateRekognitionResponse();
+      }
+
       // Convert image to base64
       String base64Image = base64Encode(imageBytes);
 
