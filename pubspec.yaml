@@ -54,15 +54,13 @@ flutter:
 
   assets:
     - assets/
-<<<<<<< HEAD
     - assets/images/
     - assets/rewards.png
     - assets/human_heart.glb
-=======
     - assets/heart.jpg
     - assets/human_heart.glb
     - .env
->>>>>>> 1f0987c1e0239f1a61549bd7319e4129647af6a2
+
 
 
   # To add assets to your application, add an assets section, like this:
