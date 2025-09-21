@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AWSChatbotService {
-  static const String _region = 'us-east-1';
+  static const String _region = 'ap-southeast-1';
   static const String _accessKey = 'AWS_ACCESS_KEY_ID_BEDROCK';
   static const String _secretKey = 'AWS_SECRET_ACCESS_KEY_BEDROCK';
 
   // AWS Bedrock endpoint
   static const String _bedrockEndpoint =
-      'https://bedrock-runtime.us-east-1.amazonaws.com';
+      'https://bedrock-runtime.ap-southeast-1.amazonaws.com';
 
   Future<String> getAIResponse(String userMessage) async {
     try {

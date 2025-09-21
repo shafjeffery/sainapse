@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'home_page.dart';
 import 'screen/chatbot/chatbot_screen.dart';
 import 'screen/friends/friends_screen.dart';
 import 'screen/visualize/lookout_screen.dart';
 
 import 'shared/theme.dart';
 import 'screen/flashnotes/flashnotes_home.dart';
+import 'screen/home/home_page.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
@@ -23,7 +26,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData.light(),
-      home: const LookoutScreen(),
+      home: const HomePage(),
     );
   }
 }
