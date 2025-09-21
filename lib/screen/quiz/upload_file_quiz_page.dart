@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'quiz_game_page.dart';
+import 'quiz_upload_screen.dart';
 
 class UploadFileQuizPage extends StatefulWidget {
   const UploadFileQuizPage({super.key});
@@ -61,42 +61,15 @@ class _UploadFileQuizPageState extends State<UploadFileQuizPage> {
       return;
     }
 
-    setState(() {
-      isUploading = true;
-    });
-
-    // Simulate upload and processing
-    await Future.delayed(const Duration(seconds: 3));
-
-    setState(() {
-      isUploading = false;
-    });
-
-    // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Quiz uploaded successfully! Redirecting to quiz...'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-
-    // Wait a moment then navigate to quiz game page
-    await Future.delayed(const Duration(seconds: 1));
-
-    // Navigate to quiz game page
+    // Navigate to the new quiz upload screen
     if (mounted) {
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const QuizGamePage(),
+          builder: (context) => const QuizUploadScreen(),
         ),
       );
     }
-
-    // Reset file selection
-    setState(() {
-      selectedFileName = null;
-    });
   }
 
   @override

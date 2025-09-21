@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'aws_chatbot_service.dart';
 
 class ChatbotService {

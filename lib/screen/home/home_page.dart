@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sainapse/screen/feature selection/theme_selection_page.dart';
 import '../flashnotes/flashnotes_home.dart';
 import '../visualize/lookout_screen.dart';
-import '../quiz/upload_file_quiz_page.dart';
+import '../quiz/quiz_upload_screen.dart';
 import '../profile/card_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -171,7 +171,7 @@ class HomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const UploadFileQuizPage(),
+                        builder: (context) => const QuizUploadScreen(),
                       ),
                     );
                   },
