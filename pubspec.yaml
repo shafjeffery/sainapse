@@ -1,8 +1,6 @@
 name: sainapse
 description: "A new Flutter project."
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -13,64 +11,59 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+
+  
+  # Camera and AWS dependencies
+  camera: ^0.10.5+9
+  
+  # AWS SDK for Flutter
+  dio: ^5.3.2
+  crypto: ^3.0.3  # For AWS signing
+  
+  # UI Dependencies
+  google_fonts: ^6.2.1
+
   image_picker: ^1.1.2
   http: ^1.4.0
   flutter_dotenv: ^5.2.1
   speech_to_text: ^7.0.0
   confetti: ^0.7.0
-  google_fonts: ^6.2.1
   qr_flutter: ^4.0.0
   lottie: ^2.7.0
   barcode_widget: ^2.0.4
   smooth_page_indicator: ^1.2.1
   shared_preferences: ^2.2.2
-  audioplayers: ^5.2.1
-  firebase_core: ^3.13.0
-  firebase_auth: ^5.5.3
-  cloud_firestore: ^5.6.7
-  firebase_storage: ^12.4.6
-  google_maps_flutter: ^2.12.2
-  geolocator: ^14.0.0
-  geocoding: ^3.0.0
-  flutter_polyline_points: ^2.1.0
-  location: ^8.0.0
   flutter_svg: ^2.1.0
-  camera: ^0.11.1
-  google_mlkit_object_detection: ^0.15.0
-  google_mlkit_text_recognition: ^0.15.0
   permission_handler: ^12.0.0+1
   flutter_tts: ^3.8.5
-  google_mlkit_commons: ^0.11.0
   model_viewer_plus: ^1.9.3
   provider: ^6.1.5
-  google_generative_ai: ^0.4.7
   intl: ^0.20.2
   graphview: ^1.2.0
+  curved_navigation_bar: ^1.0.3
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^5.0.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/
+<<<<<<< HEAD
+    - assets/images/
+    - assets/rewards.png
+    - assets/human_heart.glb
+=======
+    - assets/heart.jpg
+    - assets/human_heart.glb
+    - .env
+>>>>>>> 1f0987c1e0239f1a61549bd7319e4129647af6a2
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -102,3 +95,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+

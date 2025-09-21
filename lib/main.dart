@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'shared/theme.dart';
-import 'screen/flashnotes/flashnotes_home.dart';
+import 'screen/main_navigation.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -14,8 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SAInapse',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: const FlashNotesPage(),
+
+      theme: ThemeData.light(),
+      home: const MainNavigation(),
     );
   }
 }
