@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'flashnotes_upload.dart';
 import '../../shared/theme.dart';
+import 'saved_notes_viewer.dart';
 
 class FlashNotesPage extends StatelessWidget {
   const FlashNotesPage({super.key});
@@ -164,7 +165,18 @@ class FlashNotesPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _QuickAction(icon: Icons.create_new_folder, label: "New"),
+                  _QuickAction(
+                    icon: Icons.folder_open,
+                    label: "Saved Notes",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SavedNotesViewer(),
+                        ),
+                      );
+                    },
+                  ),
                   _QuickAction(icon: Icons.history, label: "Recent"),
                   _QuickAction(icon: Icons.bookmark, label: "Bookmarks"),
                 ],
@@ -294,13 +306,14 @@ class _FolderCard extends StatelessWidget {
 class _QuickAction extends StatelessWidget {
   final IconData icon;
   final String label;
+  final VoidCallback? onTap;
 
-  const _QuickAction({required this.icon, required this.label});
+  const _QuickAction({required this.icon, required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Column(
         children: [
           Container(

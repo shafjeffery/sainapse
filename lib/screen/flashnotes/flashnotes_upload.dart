@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'flashnotes_filelist.dart';
 import '../../shared/theme.dart';
+import '../../services/aws_flashnotes_service.dart';
+import '../../services/aws_config.dart';
+import '../../debug/aws_test_widget.dart';
 
 class UploadFileSummaryPage extends StatefulWidget {
   const UploadFileSummaryPage({super.key});
@@ -13,81 +20,155 @@ class UploadFileSummaryPage extends StatefulWidget {
 class _UploadFileSummaryPageState extends State<UploadFileSummaryPage> {
   bool isQuizSelected = true;
   String? selectedFileName;
+  File? selectedFile;
+  Uint8List? selectedFileBytes;
+  String? selectedContentType;
   bool isUploading = false;
+  String? errorMessage;
 
   Future<void> _pickFile() async {
-    // Simulate file picker dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            'Select Your File',
-            style: GoogleFonts.museoModerno(fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            isQuizSelected ? 'Choose a PDF or DOC file' : 'Choose a video file',
-            style: GoogleFonts.museoModerno(),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cancel', style: GoogleFonts.museoModerno()),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  selectedFileName = isQuizSelected
-                      ? 'quiz_questions.pdf'
-                      : 'quiz_video.mp4';
-                });
-                Navigator.pop(context);
-              },
-              child: Text('Select File', style: GoogleFonts.museoModerno()),
-            ),
-          ],
+    try {
+      setState(() {
+        errorMessage = null;
+      });
+
+      final FilePickerResult? result = await AWSFlashnotesService.pickFile(
+        isDocument: isQuizSelected,
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        final PlatformFile platformFile = result.files.single;
+        final String fileName = platformFile.name;
+        final String contentType = AWSFlashnotesService.getContentType(
+          fileName,
         );
-      },
-    );
+
+        // Validate file type
+        if (!AWSFlashnotesService.isValidFileType(
+          contentType,
+          isQuizSelected,
+        )) {
+          setState(() {
+            errorMessage = isQuizSelected
+                ? 'Please select a valid document file (PDF, DOC, DOCX, JPG, PNG, TIFF, WEBP)'
+                : 'Please select a valid video file (MP4, AVI, MOV, WMV)';
+          });
+          return;
+        }
+
+        // Validate file size
+        final int fileSize = platformFile.size;
+        if (!AWSFlashnotesService.isValidFileSize(fileSize)) {
+          setState(() {
+            errorMessage = 'File size must be less than 10MB';
+          });
+          return;
+        }
+
+        setState(() {
+          selectedFileName = fileName;
+          selectedContentType = contentType;
+
+          if (kIsWeb) {
+            // On web, use bytes
+            selectedFileBytes = platformFile.bytes;
+            selectedFile = null;
+          } else {
+            // On mobile, use file path
+            if (platformFile.path != null) {
+              selectedFile = File(platformFile.path!);
+              selectedFileBytes = null;
+            } else {
+              setState(() {
+                errorMessage = 'Failed to access file path';
+              });
+              return;
+            }
+          }
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Error picking file: $e';
+      });
+    }
   }
 
   Future<void> _uploadFile() async {
-    if (selectedFileName == null) {
+    if ((selectedFile == null && selectedFileBytes == null) ||
+        selectedFileName == null ||
+        selectedContentType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a quiz file first')),
+        const SnackBar(content: Text('Please select a file first')),
       );
       return;
     }
 
     setState(() {
       isUploading = true;
+      errorMessage = null;
     });
 
-    // Simulate upload and processing
-    await Future.delayed(const Duration(seconds: 3));
-
-    setState(() {
-      isUploading = false;
-    });
-
-    // Store the file name before resetting
-    final uploadedFileName = selectedFileName!;
-
-    // Navigate to file list page after successful upload
-    if (mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              FileSummaryOptionsPage(fileName: uploadedFileName),
-        ),
+    try {
+      // Process file with AWS services
+      final FlashnotesResult? result = await AWSFlashnotesService.processFile(
+        file: selectedFile,
+        fileBytes: selectedFileBytes,
+        fileName: selectedFileName!,
+        contentType: selectedContentType!,
       );
-    }
 
-    // Reset file selection
-    setState(() {
-      selectedFileName = null;
-    });
+      if (result != null) {
+        // Store the result before resetting
+        final processedFileName = result.fileName;
+
+        // Navigate to file list page after successful processing
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FileSummaryOptionsPage(
+                fileName: processedFileName,
+                flashnotesResult: result,
+              ),
+            ),
+          );
+        }
+
+        // Reset file selection
+        setState(() {
+          selectedFile = null;
+          selectedFileBytes = null;
+          selectedFileName = null;
+          selectedContentType = null;
+        });
+      } else {
+        setState(() {
+          errorMessage = 'Failed to process file. Please try again.';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Error processing file: $e';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          isUploading = false;
+        });
+      }
+    }
+  }
+
+  /// Check if AWS credentials are properly configured
+  bool _hasValidAWSCredentials() {
+    final String accessKey = AWSConfig.accessKeyId;
+    final String secretKey = AWSConfig.secretAccessKey;
+
+    return accessKey.isNotEmpty &&
+        secretKey.isNotEmpty &&
+        accessKey != 'YOUR_ACCESS_KEY_ID' &&
+        secretKey != 'YOUR_SECRET_ACCESS_KEY';
   }
 
   @override
@@ -141,7 +222,83 @@ class _UploadFileSummaryPageState extends State<UploadFileSummaryPage> {
                 textAlign: TextAlign.center,
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
+
+              // AWS Status Indicator
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: _hasValidAWSCredentials()
+                      ? Colors.green[100]
+                      : Colors.orange[100],
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: _hasValidAWSCredentials()
+                        ? Colors.green
+                        : Colors.orange,
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      _hasValidAWSCredentials()
+                          ? Icons.cloud_done
+                          : Icons.warning_amber,
+                      size: 16,
+                      color: _hasValidAWSCredentials()
+                          ? Colors.green[700]
+                          : Colors.orange[700],
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      _hasValidAWSCredentials()
+                          ? 'AWS Mode (Full AI processing)'
+                          : 'Local Mode (Configure AWS for full features)',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: _hasValidAWSCredentials()
+                            ? Colors.green[700]
+                            : Colors.orange[700],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // AWS Test Button (Debug)
+              if (kDebugMode)
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AWSTestWidget(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text('🔧 Test AWS Configuration (Debug)'),
+                  ),
+                ),
+
+              const SizedBox(height: 10),
 
               // Content Type Toggle
               Container(
@@ -156,8 +313,10 @@ class _UploadFileSummaryPageState extends State<UploadFileSummaryPage> {
                         onTap: () {
                           setState(() {
                             isQuizSelected = true;
-                            selectedFileName =
-                                null; // Reset file when switching
+                            selectedFile = null;
+                            selectedFileName = null;
+                            selectedContentType = null;
+                            errorMessage = null;
                           });
                         },
                         child: Container(
@@ -186,8 +345,10 @@ class _UploadFileSummaryPageState extends State<UploadFileSummaryPage> {
                         onTap: () {
                           setState(() {
                             isQuizSelected = false;
-                            selectedFileName =
-                                null; // Reset file when switching
+                            selectedFile = null;
+                            selectedFileName = null;
+                            selectedContentType = null;
+                            errorMessage = null;
                           });
                         },
                         child: Container(
@@ -216,6 +377,26 @@ class _UploadFileSummaryPageState extends State<UploadFileSummaryPage> {
               ),
 
               const SizedBox(height: 20),
+
+              // Error Message
+              if (errorMessage != null)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.red[50],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.red[300]!),
+                  ),
+                  child: Text(
+                    errorMessage!,
+                    style: GoogleFonts.poppins(
+                      color: Colors.red[700],
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
 
               // Quiz Settings
               const SizedBox(height: 10),
@@ -306,10 +487,10 @@ class _UploadFileSummaryPageState extends State<UploadFileSummaryPage> {
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
                   child: isUploading
-                      ? const Row(
+                      ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(
@@ -319,12 +500,20 @@ class _UploadFileSummaryPageState extends State<UploadFileSummaryPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 10),
-                            Text('Uploading...'),
+                            const SizedBox(width: 10),
+                            Text(
+                              _hasValidAWSCredentials()
+                                  ? 'Processing with AWS...'
+                                  : 'Processing locally...',
+                              style: GoogleFonts.museoModerno(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         )
                       : Text(
-                          'Upload Notes',
+                          'Upload & Process',
                           style: GoogleFonts.museoModerno(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
