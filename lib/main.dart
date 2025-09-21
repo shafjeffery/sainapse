@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'screen/chatbot/chatbot_screen.dart';
-import 'screen/friends/friends_screen.dart';
-import 'screen/visualize/lookout_screen.dart';
-
+import 'screen/main_navigation.dart';
+import 'screen/leaderboard/leaderboard.dart';
+import 'screen/rewards/rewards_screen.dart';
 import 'shared/theme.dart';
-import 'screen/flashnotes/flashnotes_home.dart';
-import 'screen/home/home_page.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,8 +21,12 @@ class MyApp extends StatelessWidget {
       title: 'SAInapse',
       debugShowCheckedModeBanner: false,
 
-      theme: ThemeData.light(),
-      home: const HomePage(),
+      theme: AppTheme.lightTheme,
+      home: const MainNavigation(),
+      routes: {
+        '/leaderboard': (context) => const LeaderboardScreen(),
+        '/reward': (context) => const RewardsScreen(),
+      },
     );
   }
 }

@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'dart:math';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({Key? key}) : super(key: key);
@@ -28,12 +28,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
     'assets/user4.png',
     'assets/user5.png',
     'assets/user6.png',
-    'assets/user7.png', 
+    'assets/user7.png',
     'assets/user8.png',
     'assets/user10.png',
     'assets/user11.png',
   ];
-
 
   @override
   void initState() {
@@ -149,7 +148,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
       return Center(
         child: Text(
           'Not enough users for leaderboard',
-          style: GoogleFonts.poppins(fontSize: 18, color: Color(0xFF3A2C0F)),
+          style: TextStyle(fontSize: 18, color: Color(0xFF3A2C0F)),
         ),
       );
     }
@@ -204,29 +203,26 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
               animation: _animation,
               gradient: gradients[0],
               borderRadius: radii[0],
-              accent: Image.asset('assets/reward.png', width: 38, height: 38),
             ),
             _AnimatedPodium(
               place: 1,
               user: topUsers[0],
               height: heights[1],
-              width: 85,
+              width: 100,
               baseHeight: baseHeight,
               animation: _animation,
               gradient: gradients[1],
               borderRadius: radii[1],
-              accent: Image.asset('assets/reward.png', width: 38, height: 38),
             ),
             _AnimatedPodium(
               place: 3,
               user: topUsers[2],
               height: heights[2],
-              width: 85,
+              width: 100,
               baseHeight: baseHeight,
               animation: _animation,
               gradient: gradients[2],
               borderRadius: radii[2],
-              accent: Image.asset('assets/reward.png', width: 38, height: 38),
             ),
           ],
         ),
@@ -241,33 +237,41 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
       body: Stack(
         children: [
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                        onPressed: () => Navigator.pop(context),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Leaderboard',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 26,
+                              color: Color(0xFF3A2C0F),
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Leaderboard',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 26,
-                          color: Color(0xFF3A2C0F),
-                          letterSpacing: 1.2,
-                        ),
-                      ),
+                      const SizedBox(height: 24),
+                      Center(child: _buildPodium()),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  Center(child: _buildPodium()),
-                ],
-              ),
+                ),
+                Expanded(child: Container()), // This will take remaining space
+              ],
             ),
           ),
           DraggableScrollableSheet(
@@ -297,135 +301,129 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                       Expanded(
                         child: FadeTransition(
                           opacity: _fadeInAnimation,
-                          child:
-                              otherUsers.isEmpty
-                                  ? Center(
-                                    child: Text(
-                                      'No other users yet',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 18,
-                                        color: Color(0xFF3A2C0F),
-                                      ),
+                          child: otherUsers.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    'No other users yet',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Color(0xFF3A2C0F),
                                     ),
-                                  )
-                                  : ListView.separated(
-                                    controller: scrollController,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 0,
-                                    ),
-                                    itemCount: otherUsers.length,
-                                    separatorBuilder:
-                                        (context, index) =>
-                                            const SizedBox(height: 12),
-                                    itemBuilder: (context, index) {
-                                      final user = otherUsers[index];
-                                      return Container(
-                                        margin: const EdgeInsets.symmetric(
-                                          vertical: 6,
-                                          horizontal: 2,
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 10,
-                                          horizontal: 14,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            22,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withOpacity(
-                                                0.06,
-                                              ),
-                                              blurRadius: 8,
-                                              offset: Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 32,
-                                              height: 32,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                  color: const Color.fromARGB(
-                                                    255,
-                                                    202,
-                                                    201,
-                                                    201,
-                                                  ),
-                                                  width: 1.5,
-                                                ),
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                '${index + 4}',
-                                                style: GoogleFonts.poppins(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                  color: Color.fromARGB(
-                                                    255,
-                                                    0,
-                                                    0,
-                                                    0,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 12),
-                                            CircleAvatar(
-                                              radius: 28,
-                                              backgroundColor: user['color'],
-                                              child: Image.asset(
-                                                user['avatar'],
-                                                width: 40,
-                                                height: 40,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 16),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    user['name'],
-                                                    style: GoogleFonts.poppins(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 16,
-                                                      color: Color(0xFF23213A),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 2),
-                                                  Text(
-                                                    '${user['points']} points',
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 15,
-                                                      color: Color.fromARGB(
-                                                        255,
-                                                        142,
-                                                        140,
-                                                        140,
-                                                      ),
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
                                   ),
+                                )
+                              : ListView.separated(
+                                  controller: scrollController,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 0,
+                                  ),
+                                  itemCount: otherUsers.length,
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(height: 12),
+                                  itemBuilder: (context, index) {
+                                    final user = otherUsers[index];
+                                    return Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 6,
+                                        horizontal: 2,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 10,
+                                        horizontal: 14,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(22),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.06,
+                                            ),
+                                            blurRadius: 8,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 32,
+                                            height: 32,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: const Color.fromARGB(
+                                                  255,
+                                                  202,
+                                                  201,
+                                                  201,
+                                                ),
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              '${index + 4}',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                                color: Color.fromARGB(
+                                                  255,
+                                                  0,
+                                                  0,
+                                                  0,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          CircleAvatar(
+                                            radius: 28,
+                                            backgroundColor: user['color'],
+                                            child: Image.asset(
+                                              user['avatar'],
+                                              width: 40,
+                                              height: 40,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  user['name'],
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                    color: Color(0xFF23213A),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 2),
+                                                Text(
+                                                  '${user['points']} points',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Color.fromARGB(
+                                                      255,
+                                                      142,
+                                                      140,
+                                                      140,
+                                                    ),
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                         ),
                       ),
                     ],
@@ -448,7 +446,7 @@ class _AnimatedPodium extends StatelessWidget {
   final Animation<double> animation;
   final Gradient gradient;
   final BorderRadius borderRadius;
-  final Widget accent;
+  final Widget? accent;
   final double width;
 
   const _AnimatedPodium({
@@ -459,7 +457,7 @@ class _AnimatedPodium extends StatelessWidget {
     required this.animation,
     required this.gradient,
     required this.borderRadius,
-    required this.accent,
+    this.accent,
     required this.width,
   });
 
@@ -500,13 +498,14 @@ class _AnimatedPodium extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (place == 1) Positioned(top: -38, child: accent),
+                    if (place == 1 && accent != null)
+                      Positioned(top: -38, child: accent!),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Text(
                   user['name'],
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
                     color: Color(0xFF3A2C0F),
@@ -531,7 +530,7 @@ class _AnimatedPodium extends StatelessWidget {
                   ),
                   child: Text(
                     '${user['points']} pts',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -553,13 +552,14 @@ class _AnimatedPodium extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.topCenter,
                   children: [
-                    if (place != 1) Positioned(top: 8, child: accent),
+                    if (place != 1 && accent != null)
+                      Positioned(top: 8, child: accent!),
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 18.0),
                         child: Text(
                           '$place',
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 38,
                             color: Colors.white,
