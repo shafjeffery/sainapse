@@ -14,13 +14,12 @@ class ThemeSelectionPage extends StatelessWidget {
     final themes = [
       {
         'title': 'Go-To-Quiz',
-        'description': 'Generate your own sets of quiz with your learning material',
+        'description':
+            'Generate your own sets of quiz with your learning material',
         'image': 'assets/1.png',
         'onTap': () => Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const UploadFileQuizPage(),
-          ),
+          MaterialPageRoute(builder: (context) => const UploadFileQuizPage()),
         ),
       },
       {
@@ -29,9 +28,7 @@ class ThemeSelectionPage extends StatelessWidget {
         'image': 'assets/2.png',
         'onTap': () => Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const FlashNotesPage(),
-          ),
+          MaterialPageRoute(builder: (context) => const FlashNotesPage()),
         ),
       },
       {
@@ -40,9 +37,7 @@ class ThemeSelectionPage extends StatelessWidget {
         'image': 'assets/3.png',
         'onTap': () => Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const LookoutScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const LookoutScreen()),
         ),
       },
       {
@@ -51,9 +46,7 @@ class ThemeSelectionPage extends StatelessWidget {
         'image': 'assets/4.png',
         'onTap': () => Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const FriendsScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const FriendsScreen()),
         ),
       },
       {
@@ -62,9 +55,7 @@ class ThemeSelectionPage extends StatelessWidget {
         'image': 'assets/5.png',
         'onTap': () => Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const ChatbotScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const ChatbotScreen()),
         ),
       },
     ];
@@ -79,7 +70,7 @@ class ThemeSelectionPage extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Interesting Features',
+          'features',
           style: GoogleFonts.museoModerno(
             color: const Color(0xFF4E342E),
             fontWeight: FontWeight.bold,

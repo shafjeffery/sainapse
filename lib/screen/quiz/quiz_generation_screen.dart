@@ -206,38 +206,6 @@ class _QuizGenerationScreenState extends State<QuizGenerationScreen> {
               ),
 
               // Info Card
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.blue[200]!),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.info_outline,
-                      color: Colors.blue[600],
-                      size: 20,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        _isGenerating 
-                            ? 'This may take a few minutes depending on document size'
-                            : _generatedQuiz != null
-                                ? 'Quiz generated successfully! Ready to start.'
-                                : 'There was an error generating the quiz. Please try again.',
-                        style: GoogleFonts.museoModerno(
-                          color: Colors.blue[700],
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
         ),
@@ -259,7 +227,8 @@ class _QuizGenerationScreenState extends State<QuizGenerationScreen> {
         final index = entry.key;
         final step = entry.value;
         final isCompleted = _progress > (index * 20);
-        final isCurrent = _progress >= (index * 20) && _progress < ((index + 1) * 20);
+        final isCurrent =
+            _progress >= (index * 20) && _progress < ((index + 1) * 20);
 
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
@@ -270,11 +239,11 @@ class _QuizGenerationScreenState extends State<QuizGenerationScreen> {
                 height: 24,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: isCompleted 
+                  color: isCompleted
                       ? const Color(0xFFFFE066)
                       : isCurrent
-                          ? const Color(0xFFFFE066).withOpacity(0.5)
-                          : Colors.grey[300],
+                      ? const Color(0xFFFFE066).withOpacity(0.5)
+                      : Colors.grey[300],
                 ),
                 child: isCompleted
                     ? const Icon(
@@ -283,17 +252,17 @@ class _QuizGenerationScreenState extends State<QuizGenerationScreen> {
                         size: 16,
                       )
                     : isCurrent
-                        ? const SizedBox(
-                            width: 12,
-                            height: 12,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFF4E342E),
-                              ),
-                            ),
-                          )
-                        : null,
+                    ? const SizedBox(
+                        width: 12,
+                        height: 12,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Color(0xFF4E342E),
+                          ),
+                        ),
+                      )
+                    : null,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -321,7 +290,7 @@ class _QuizGenerationScreenState extends State<QuizGenerationScreen> {
     try {
       // Simulate document processing steps
       await _simulateProgress();
-      
+
       // Generate quiz using the service with OCR
       setState(() {
         _status = 'Extracting text from image...';
@@ -371,7 +340,6 @@ class _QuizGenerationScreenState extends State<QuizGenerationScreen> {
       });
     }
   }
-
 
   void _startQuiz() {
     if (_generatedQuiz != null) {

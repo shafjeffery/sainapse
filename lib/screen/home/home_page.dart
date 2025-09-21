@@ -96,7 +96,7 @@ class HomePage extends StatelessWidget {
                     QuickActionButton(
                       imagePath: 'assets/camera.png',
                       label: 'Augmented Reality',
-                      color:  const Color.fromARGB(255, 207, 135, 84),
+                      color: const Color.fromARGB(255, 207, 135, 84),
 
                       onTap: () {
                         Navigator.push(
@@ -110,7 +110,7 @@ class HomePage extends StatelessWidget {
                     QuickActionButton(
                       imagePath: 'assets/leaderboard.png',
                       label: 'Leaderboard',
-                           color: Colors.green[200]!,
+                      color: Colors.green[200]!,
 
                       onTap: () {
                         Navigator.pushNamed(context, '/leaderboard');
@@ -134,7 +134,7 @@ class HomePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Interesting features',
+                      'features',
                       style: GoogleFonts.museoModerno(
                         color: const Color(0xFF4E342E),
                         fontWeight: FontWeight.bold,
@@ -165,7 +165,8 @@ class HomePage extends StatelessWidget {
                 // Theme Cards
                 ThemeCard(
                   title: 'Go-To-Quiz',
-                  description: 'Generate your own sets of quiz with your learning material',
+                  description:
+                      'Generate your own sets of quiz with your learning material',
                   image: 'assets/1.png',
                   onStart: () {
                     Navigator.push(
@@ -179,7 +180,8 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 16),
                 ThemeCard(
                   title: 'Flash Notes',
-                  description: 'Summarize your complex notes into simple flash notes',
+                  description:
+                      'Summarize your complex notes into simple flash notes',
                   image: 'assets/2.png',
                   onStart: () {
                     Navigator.push(
@@ -228,10 +230,7 @@ class ProfileCard extends StatelessWidget {
                   color: Colors.yellow[600],
                   borderRadius: BorderRadius.circular(30),
                 ),
-                child: Image.asset(
-                  'assets/profpic.png',
-                  fit: BoxFit.cover,
-                ),
+                child: Image.asset('assets/profpic.png', fit: BoxFit.cover),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -249,14 +248,18 @@ class ProfileCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       'School: SMKA Simpang 5',
-                      style: GoogleFonts.museoModerno(color: Colors.brown,
-                      fontWeight: FontWeight.bold,),
+                      style: GoogleFonts.museoModerno(
+                        color: Colors.brown,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                     const SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       'Age: 15',
-                      style: GoogleFonts.museoModerno(color: Colors.brown,
-                      fontWeight: FontWeight.bold,),
+                      style: GoogleFonts.museoModerno(
+                        color: Colors.brown,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -265,12 +268,12 @@ class ProfileCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           GestureDetector(
-           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CardPage()),
-            );
-          },
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CardPage()),
+              );
+            },
             child: Container(
               width: 250,
               height: 40,
@@ -310,7 +313,10 @@ class QuickActionButton extends StatelessWidget {
     required this.label,
     required this.onTap,
     required this.color,
-  }) : assert(icon != null || imagePath != null, 'Either icon or imagePath must be provided');
+  }) : assert(
+         icon != null || imagePath != null,
+         'Either icon or imagePath must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -337,12 +343,7 @@ class QuickActionButton extends StatelessWidget {
             if (icon != null)
               Icon(icon, color: Colors.white, size: 40)
             else if (imagePath != null)
-              Image.asset(
-                imagePath!,
-                width: 90,
-                height: 90,
-                
-              ),
+              Image.asset(imagePath!, width: 90, height: 90),
             const SizedBox(height: 8),
             Text(
               label,

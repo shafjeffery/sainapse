@@ -6,10 +6,7 @@ import 'quiz_result_screen.dart';
 class QuizDisplayScreen extends StatefulWidget {
   final Quiz quiz;
 
-  const QuizDisplayScreen({
-    super.key,
-    required this.quiz,
-  });
+  const QuizDisplayScreen({super.key, required this.quiz});
 
   @override
   State<QuizDisplayScreen> createState() => _QuizDisplayScreenState();
@@ -57,8 +54,8 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
             margin: const EdgeInsets.only(right: 16),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: _timeRemaining.inMinutes < 5 
-                  ? Colors.red[100] 
+              color: _timeRemaining.inMinutes < 5
+                  ? Colors.red[100]
                   : Colors.white,
               borderRadius: BorderRadius.circular(20),
             ),
@@ -68,16 +65,16 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
                 Icon(
                   Icons.timer,
                   size: 16,
-                  color: _timeRemaining.inMinutes < 5 
-                      ? Colors.red[600] 
+                  color: _timeRemaining.inMinutes < 5
+                      ? Colors.red[600]
                       : const Color(0xFF4E342E),
                 ),
                 const SizedBox(width: 4),
                 Text(
                   '${_timeRemaining.inMinutes}:${(_timeRemaining.inSeconds % 60).toString().padLeft(2, '0')}',
                   style: GoogleFonts.museoModerno(
-                    color: _timeRemaining.inMinutes < 5 
-                        ? Colors.red[600] 
+                    color: _timeRemaining.inMinutes < 5
+                        ? Colors.red[600]
                         : const Color(0xFF4E342E),
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
@@ -158,7 +155,9 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: _getDifficultyColor(currentQuestion.difficulty),
+                              color: _getDifficultyColor(
+                                currentQuestion.difficulty,
+                              ),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -171,7 +170,7 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          
+
                           // Question Text
                           Text(
                             currentQuestion.questionText,
@@ -192,7 +191,8 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
                       child: ListView.builder(
                         itemCount: currentQuestion.options.length,
                         itemBuilder: (context, index) {
-                          final isSelected = _userAnswers[_currentQuestionIndex] == index;
+                          final isSelected =
+                              _userAnswers[_currentQuestionIndex] == index;
                           return Container(
                             margin: const EdgeInsets.only(bottom: 12),
                             child: InkWell(
@@ -201,12 +201,12 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
                               child: Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: isSelected 
+                                  color: isSelected
                                       ? const Color(0xFFFFE066)
                                       : Colors.white,
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: isSelected 
+                                    color: isSelected
                                         ? const Color(0xFF4E342E)
                                         : Colors.grey[300]!,
                                     width: isSelected ? 2 : 1,
@@ -219,15 +219,17 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
                                       height: 24,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: isSelected 
+                                        color: isSelected
                                             ? const Color(0xFF4E342E)
                                             : Colors.grey[300],
                                       ),
                                       child: Center(
                                         child: Text(
-                                          String.fromCharCode(65 + index), // A, B, C, D
+                                          String.fromCharCode(
+                                            65 + index,
+                                          ), // A, B, C, D
                                           style: GoogleFonts.museoModerno(
-                                            color: isSelected 
+                                            color: isSelected
                                                 ? Colors.white
                                                 : Colors.grey[600],
                                             fontWeight: FontWeight.bold,
@@ -241,10 +243,10 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
                                       child: Text(
                                         currentQuestion.options[index],
                                         style: GoogleFonts.museoModerno(
-                                          color: isSelected 
+                                          color: isSelected
                                               ? const Color(0xFF4E342E)
                                               : Colors.brown[600],
-                                          fontWeight: isSelected 
+                                          fontWeight: isSelected
                                               ? FontWeight.w600
                                               : FontWeight.normal,
                                           fontSize: 16,
@@ -290,14 +292,14 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
                         ),
                       ),
                     ),
-                  
+
                   if (_currentQuestionIndex > 0) const SizedBox(width: 12),
-                  
+
                   // Next/Submit Button
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: _userAnswers[_currentQuestionIndex] != null 
-                          ? _nextQuestion 
+                      onPressed: _userAnswers[_currentQuestionIndex] != null
+                          ? _nextQuestion
                           : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFFE066),
@@ -308,7 +310,8 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       child: Text(
-                        _currentQuestionIndex == widget.quiz.questions.length - 1
+                        _currentQuestionIndex ==
+                                widget.quiz.questions.length - 1
                             ? 'Submit Quiz'
                             : 'Next',
                         style: GoogleFonts.museoModerno(
@@ -366,7 +369,7 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
   void _submitQuiz() {
     final endTime = DateTime.now();
     final timeTaken = endTime.difference(_startTime!);
-    
+
     // Calculate score
     int score = 0;
     for (int i = 0; i < widget.quiz.questions.length; i++) {
@@ -389,10 +392,8 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => QuizResultScreen(
-          quiz: widget.quiz,
-          result: result,
-        ),
+        builder: (context) =>
+            QuizResultScreen(quiz: widget.quiz, result: result),
       ),
     );
   }
@@ -427,18 +428,14 @@ class _QuizDisplayScreenState extends State<QuizDisplayScreen> {
         ),
         content: Text(
           'Are you sure you want to exit? Your progress will be lost.',
-          style: GoogleFonts.museoModerno(
-            color: Colors.brown[600],
-          ),
+          style: GoogleFonts.museoModerno(color: Colors.brown[600]),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: GoogleFonts.museoModerno(
-                color: Colors.grey[600],
-              ),
+              style: GoogleFonts.museoModerno(color: Colors.grey[600]),
             ),
           ),
           TextButton(

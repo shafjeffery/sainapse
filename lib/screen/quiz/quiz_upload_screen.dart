@@ -82,14 +82,14 @@ class _QuizUploadScreenState extends State<QuizUploadScreen> {
                     Icon(
                       Icons.upload_file,
                       size: 64,
-                      color: _selectedFile != null 
-                          ? const Color(0xFFFFE066) 
+                      color: _selectedFile != null
+                          ? const Color(0xFFFFE066)
                           : Colors.grey[400],
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      _selectedFile != null 
-                          ? 'File Selected' 
+                      _selectedFile != null
+                          ? 'File Selected'
                           : 'Select Document',
                       style: GoogleFonts.museoModerno(
                         color: const Color(0xFF4E342E),
@@ -165,24 +165,24 @@ class _QuizUploadScreenState extends State<QuizUploadScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: _uploadStatus.contains('Error') 
-                        ? Colors.red[50] 
+                    color: _uploadStatus.contains('Error')
+                        ? Colors.red[50]
                         : Colors.blue[50],
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: _uploadStatus.contains('Error') 
-                          ? Colors.red[200]! 
+                      color: _uploadStatus.contains('Error')
+                          ? Colors.red[200]!
                           : Colors.blue[200]!,
                     ),
                   ),
                   child: Row(
                     children: [
                       Icon(
-                        _uploadStatus.contains('Error') 
-                            ? Icons.error_outline 
+                        _uploadStatus.contains('Error')
+                            ? Icons.error_outline
                             : Icons.info_outline,
-                        color: _uploadStatus.contains('Error') 
-                            ? Colors.red[600] 
+                        color: _uploadStatus.contains('Error')
+                            ? Colors.red[600]
                             : Colors.blue[600],
                       ),
                       const SizedBox(width: 12),
@@ -190,8 +190,8 @@ class _QuizUploadScreenState extends State<QuizUploadScreen> {
                         child: Text(
                           _uploadStatus,
                           style: GoogleFonts.museoModerno(
-                            color: _uploadStatus.contains('Error') 
-                                ? Colors.red[600] 
+                            color: _uploadStatus.contains('Error')
+                                ? Colors.red[600]
                                 : Colors.blue[600],
                             fontSize: 14,
                           ),
@@ -287,7 +287,7 @@ class _QuizUploadScreenState extends State<QuizUploadScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '1. Upload your document (PDF or image)\n2. AI extracts text and analyzes content\n3. Generate personalized quiz questions\n4. Take the quiz and track your progress',
+                      ' AI extracts text and analyzes content\n3. Generate personalized quiz questions',
                       style: GoogleFonts.museoModerno(
                         color: Colors.blue[700],
                         fontSize: 14,
@@ -335,9 +335,12 @@ class _QuizUploadScreenState extends State<QuizUploadScreen> {
     try {
       // For now, we'll use a mock userId. In a real app, get this from auth
       const String userId = 'user123';
-      
-      final document = await _quizService.uploadDocument(_selectedFile!, userId);
-      
+
+      final document = await _quizService.uploadDocument(
+        _selectedFile!,
+        userId,
+      );
+
       setState(() {
         _uploadStatus = 'Document uploaded successfully! Processing...';
       });
